@@ -30,7 +30,7 @@ class App extends Component {
     const persons = [...this.state.persons]
     persons[personIndex] = person;
     this.setState({
-      persons: person
+      persons: persons
     })
   }
 
@@ -41,7 +41,8 @@ class App extends Component {
 
   render() {
     const style = {
-      backgroundColor: 'grey',
+      backgroundColor: 'green',
+      color: 'white',
       font: 'inherit',
       border: '1px solid green',
       padding: '8px',
@@ -53,21 +54,29 @@ class App extends Component {
     if (this.state.showPersons) {
       persons = (
         <div>
-          {this.state.persons.map((personInList,index) =>{
+          {this.state.persons.map((person,index) =>{
             return <Person
             click={() => this.deletePersonHandler(index)}
-             name={personInList.name}
-             key={personInList.id}
-             changed={(event)=>this.nameChangeHandler(event, personInList.id)}
+             name={person.name}
+             key={person.id}
+             changed={(event) => this.nameChangeHandler(event, person.id)}
              />
           })}
         </div>
       );
+      style.backgroundColor = 'red'
     }
-    
+    const classes = [];
+    if(this.state.persons.length <= 2){
+      classes.push('red');
+    }
+    if(this.state.persons.length <=1){
+      classes.push('bold')
+    }
     return (
       <div className="App">
         <h1>Hi, react here</h1>
+        <p className={classes.join(' ')}>This is a message</p>
         <button 
         style={style}
         onClick={this.togglePersonsHandler}>Toggle Persons</button>
