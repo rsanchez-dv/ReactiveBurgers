@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import './App.css';
 import Radium, {StyleRoot} from 'radium'
-import Person from './Person/Person'
+import Persons from '../components/Persons/Persons'
+import Cockpit from '../components/Cockpit/Cockpit';
 
 class App extends Component {
+  constructor(props){
+      super(props)
+      console.log('Thisi s inside constructor')
+  }
+  componentWillMount(){
+    console.log('This is mount')
+  }
   state = {
     persons: [
       { id: '1', name:'Max',age:28},
@@ -40,55 +48,22 @@ class App extends Component {
   }
 
   render() {
-    const style = {
-      backgroundColor: 'green',
-      color: 'white',
-      font: 'inherit',
-      border: '1px solid green',
-      padding: '8px',
-      cursor:'pointer',
-      ':hover':{
-        backgroundColor: 'lightgreen',
-        color: 'black'
-      }
-    };
-
-
     let persons = null;
+
     if (this.state.showPersons) {
-      persons = (
-        <div>
-          {this.state.persons.map((person,index) =>{
-            return <Person
-            click={() => this.deletePersonHandler(index)}
-             name={person.name}
-             key={person.id}
-             changed={(event) => this.nameChangeHandler(event, person.id)}
-             />
-          })}
-        </div>
-      );
-      style.backgroundColor = 'red';
-      style[':hover'] = {
-        backgroundColor: 'lightred',
-        color: 'black'
-      }
+      persons = <Persons 
+          persons={this.state.persons}
+          clicked={this.deletePersonHandler}
+          changed={this.nameChangeHandler}/>
     }
-    const classes = [];
-    if(this.state.persons.length <= 2){
-      classes.push('red');
-    }
-    if(this.state.persons.length <=1){
-      classes.push('bold')
-    }
+   
     return (
       <StyleRoot>
       <div className="App">
-        <h1>Hi, react here</h1>
-        <p className={classes.join(' ')}>This is a message</p>
-        <button 
-        style={style}
-        onClick={this.togglePersonsHandler}>Toggle Persons</button>
+        <Cockpit 
+          showPersons={this.state.showPersons}
+          persons={this.state.persons}
+          clicked={this.togglePersonsHandler}/>
         {persons}
       </div>
       </StyleRoot>
