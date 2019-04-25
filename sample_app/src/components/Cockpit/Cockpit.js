@@ -1,5 +1,6 @@
 import React from 'react';
 import classes from './Cockpit.css'
+import Aux from '../../hoc/Aux.js'
 
 const cockpit = (props) => {
     const classes = [];
@@ -17,13 +18,14 @@ const cockpit = (props) => {
       classes.push('bold')
     }
     return (
-        <div className={classes.Cockpit}>
-            <h1>Hi, react here</h1>
+<Aux>            <h1>Hi, react here</h1>
             <p className={classes.join(' ')}>This is a message</p>
             <button 
             className={btnClass}
             onClick={props.clicked}>Toggle Persons</button>
-        </div>
+
+</Aux>
+      
     );
 };
 
