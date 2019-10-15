@@ -6,9 +6,9 @@
     
   },
   "scripts": {
-    "start": "node /burgerbuilder/scripts/start.js",
-    "build": "node /burgerbuilder/scripts/build.js",
-    "test": "node /burgerbuilder/scripts/test.js"
+    "start": "node /burgerapp/scripts/start.js",
+    "build": "node /burgerapp/scripts/build.js",
+    "test": "node /burgerapp/scripts/test.js"
   },
   "eslintConfig": {
     "extends": "react-app"
