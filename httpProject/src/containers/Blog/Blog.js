@@ -2,20 +2,19 @@ import React, { Component } from 'react';
 import './Blog.css';
 import Posts from './Posts/Posts';
 import NewPost from './NewPost/NewPost'
-import {Route, Link} from 'react-router-dom';
+import {Route, NavLink} from 'react-router-dom';
 class Blog extends Component {
     render () {
-         
         return (
             <div>
                 <header className="Blog">
                     <nav>
                         <ul>
-                            <li><Link to="/">Home</Link></li>
-                            <li><Link to={{
-                                pathname: 'new-post',
+                            <li><NavLink to="/" exact>Home</NavLink></li>
+                            <li><NavLink to={{
+                                pathname: '/new-post',
                                 hash: '#submit'
-                            }}>New Post</Link></li>
+                            }}>New Post</NavLink></li>
                         </ul>
                     </nav>
                 </header>
