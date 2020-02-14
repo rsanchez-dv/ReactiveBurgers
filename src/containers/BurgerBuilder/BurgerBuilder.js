@@ -4,7 +4,6 @@ import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
-import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner'
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
 const INGREDIENT_PRICES = {
@@ -13,7 +12,6 @@ const INGREDIENT_PRICES = {
     meat: 1.3,
     bacon: 0.7
 }
-
 class BurgerBuilder extends Component {
     
     state = {
@@ -79,42 +77,18 @@ class BurgerBuilder extends Component {
         this.updatePurchaseState(updatedIngredients);
     }
     purchaseContinueHandler = () =>{
-        /*
-        this.setState({loading: true})
-        const order = {
-            ingredients: this.state.ingredients,
-            // Recalculate price on server
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Roberto Sanchez',
-                address:{
-                    street:'123 Fake St.',
-                    zipCode: '90061',
-                    country: 'USA',
-                },
-                email: 'asdf@asdf.com'
-            },
-            deliveryMethod: 'fastest'
+        const queryParams = [];
+        for (let i in this.state.ingredients){
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
+
         }
-        axios.post(`/orders.json`,order)
-        .then(response=> {
-            this.setState({loading: false,purchasing: false});
-        })
-        .catch(error => {
-            this.setState({loading: false,purchasing: false});
+        queryParams.push('price=' + this.state.totalPrice);
+
+        const queryString = queryParams.join('&');
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryString
         });
-    */
-   const queryParams = [];
-   for (let i in this.state.ingredients){
-       queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
-
-   }
-   const queryString = queryParams.join('&');
-   this.props.history.push({
-       pathname: '/checkout',
-       search: '?' + queryString
-   });
-
     }
     render(){
         const disabledInfo = {
@@ -159,10 +133,6 @@ class BurgerBuilder extends Component {
                     {orderSummary}
                 </Modal>
                 {burger}
-
-                
-
-            
             </Aux>
         );
     }
