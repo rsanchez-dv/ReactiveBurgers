@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Button from '../../../components/UI/Button/Button';
 import Classes from './ContactData.css';
-import axios from '../../axios-orders';
+import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 
 class ContactData extends Component{
@@ -19,7 +19,7 @@ class ContactData extends Component{
         event.preventDefault();
         this.setState({loading: true})
         const order = {
-            ingredients: this.state.ingredients,
+            ingredients: this.props.ingredients,
             // Recalculate price on server
             price: this.props.price,
             customer: {
