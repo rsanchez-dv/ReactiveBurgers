@@ -27,6 +27,7 @@ class BurgerBuilder extends Component {
         error: false
     }
     componentDidMount () {
+        /*
         axios.get('https://burgerbuilder-49a24.firebaseio.com/ingredients.json')
         .then(response =>{
             this.setState({ingredients: response.data});
@@ -34,6 +35,7 @@ class BurgerBuilder extends Component {
         .catch(error=>{
             this.setState({error: true})
         })
+        */
     }
     purchaseHandler = () =>{
         this.setState({purchasing: true});
