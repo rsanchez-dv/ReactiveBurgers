@@ -1,5 +1,5 @@
 import * as actionTypes from './actions';
-
+// Global State
 const initialState = {
     ingredients: {
         salad: 0,
@@ -9,7 +9,7 @@ const initialState = {
     },
     totalPrice: 4,
 };
-
+// Store Ingredients for the app and to calculate the total cost
 const INGREDIENT_PRICES = {
     salad: 0.5,
     cheese: 0.4,
@@ -18,8 +18,10 @@ const INGREDIENT_PRICES = {
 }
 
 const reducer = (state = initialState,action) =>{
+    // What type of action are we doing?
     switch(action.type){
         case actionTypes.ADD_INGREDIENT:
+            // Run Add Ingredient and update the global store
             return {
                 ...state,
                 ingredients: {
