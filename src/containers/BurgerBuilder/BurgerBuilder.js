@@ -24,8 +24,7 @@ class BurgerBuilder extends Component {
     componentDidMount () {
         console.log(this.props)
         // We need asyncronous Redux for this to work
-        
-        
+        this.props.onInitIngredients();
     }
 
     purchaseHandler = () =>{
@@ -57,7 +56,7 @@ class BurgerBuilder extends Component {
         }
         let orderSummary = null;
 
-        let burger = this.state.error ? <p>Ingredients can't be loaded</p>: <Spinner/>
+        let burger = this.props.error ? <p>Ingredients can't be loaded</p>: <Spinner/>
 
         if (this.props.ings){
             burger = (
@@ -96,14 +95,16 @@ class BurgerBuilder extends Component {
 const mapStateToProps = state => {
     return {
         ings: state.ingredients,
-        price: state.totalPrice
+        price: state.totalPrice,
+        error: state.error
     };
 }
 // Creating dispatches for Redux to be used in the code see line: 73
 const mapDispatchToProps = dispatch =>{
     return {
         onIngredientAdded: (ingName) => dispatch(burgerBuilderActions.addIngredient(ingName)),
-        onIngredientRemove: (ingName) => dispatch(burgerBuilderActions.removeIngredient(ingName))
+        onIngredientRemove: (ingName) => dispatch(burgerBuilderActions.removeIngredient(ingName)),
+        onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients())
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));

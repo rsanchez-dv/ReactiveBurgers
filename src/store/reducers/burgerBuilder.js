@@ -1,8 +1,9 @@
 import * as actionTypes from '../actions/actionsTypes';
 // Global State
 const initialState = {
-    ingredients:null,
+    ingredients: null,
     totalPrice: 4,
+    error: false
 };
 // Store Ingredients for the app and to calculate the total cost
 const INGREDIENT_PRICES = {
@@ -33,8 +34,26 @@ const reducer = (state = initialState,action) =>{
                     [action.ingredientName]: state.ingredients[action.ingredientName] -  1
                 },
                 totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName]
-            } 
-         
+            };
+        case actionTypes.SET_INGREDIENTS:
+            return {
+                ...state,
+                // The following one line is all you need to set the ingredients to the app however
+                // the order will be from the database not the order that we wanted
+                // ingredients: action.ingredients,
+                ingredients: {
+                    salad: action.ingredients.salad,
+                    bacon: action.ingredients.bacon,
+                    cheese: action.ingredients.cheese,
+                    meat: action.ingredients.meat
+                },
+                error: false
+            }
+         case actionTypes.FETCH_INGREDIENTS_FAILED:
+             return {
+                 ...state,
+                 error: true
+             }
         default: return state;
     }
 }
