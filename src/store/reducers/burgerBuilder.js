@@ -1,12 +1,7 @@
-import * as actionTypes from './actions';
+import * as actionTypes from '../actions/actionsTypes';
 // Global State
 const initialState = {
-    ingredients: {
-        salad: 0,
-        bacon: 0,
-        cheese: 0,
-        meat: 0
-    },
+    ingredients:null,
     totalPrice: 4,
 };
 // Store Ingredients for the app and to calculate the total cost
