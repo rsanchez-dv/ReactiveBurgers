@@ -1,41 +1,40 @@
 import React, {Component} from 'react';
 import Aux from '../../hoc/Aux/Aux';
+// You need to connect this component with Redux
 import {connect} from 'react-redux';
-import axios from '../../axios-orders';
+// What actions you can do with Redux
+import * as actions from '../../store/actions/';
+// Brings in our Axios instance
 import Modal from '../../components/UI/Modal/Modal';
 import Burger from '../../components/Burger/Burger';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
+import axios from '../../axios-orders';
 
-import * as actionTypes from '../../store/actions';
+
 
 class BurgerBuilder extends Component {
     
     state = {
         purchasing: false,
-        loading: false,
-        error: false
+        
     }
     componentDidMount () {
         console.log(this.props)
-        /*
-        axios.get('https://burgerbuilder-49a24.firebaseio.com/ingredients.json')
-        .then(response =>{
-            this.setState({ingredients: response.data});
-        })
-        .catch(error=>{
-            this.setState({error: true})
-        })
-        */
+        // We need asyncronous Redux for this to work
+        this.props.onInitIngredients();
     }
+
     purchaseHandler = () =>{
         this.setState({purchasing: true});
     }
+
     purchaseCancelHandler = () => {
         this.setState({purchasing: false});
     }
+
     updatePurchaseState (ingredients) {
         const sum = Object.keys(ingredients).map(igKey => {
             return ingredients[igKey];
@@ -43,12 +42,11 @@ class BurgerBuilder extends Component {
             return sum +el;
         },0);
         return sum > 0;
-          
     }
 
     purchaseContinueHandler = () =>{
+        this.props.onInitPurchase();
         this.props.history.push('/checkout');
-
     }
     render(){
         const disabledInfo = {
@@ -59,13 +57,14 @@ class BurgerBuilder extends Component {
         }
         let orderSummary = null;
 
-        let burger = this.state.error ? <p>Ingredients can't be loaded</p>: <Spinner/>
+        let burger = this.props.error ? <p>Ingredients can't be loaded</p>: <Spinner/>
 
         if (this.props.ings){
             burger = (
                 <Aux>
                     <Burger ingredients={this.props.ings}/>
                     <BuildControls
+                        // Pass the dispatch functions as props
                         ingredientAdded = {this.props.onIngredientAdded}
                         ingredientRemove = {this.props.onIngredientRemove}
                         price = {this.props.price}
@@ -73,7 +72,6 @@ class BurgerBuilder extends Component {
                         ordered={this.purchaseHandler}
                         purchaseable = {this.updatePurchaseState(this.props.ings)}
                     />
-                    
                 </Aux>
             )
             orderSummary = <OrderSummary 
@@ -81,9 +79,6 @@ class BurgerBuilder extends Component {
                                 price={this.props.price}
                                 purchaseCanceled={this.purchaseCancelHandler} 
                                 purchaseContinue={this.purchaseContinueHandler}/>
-        }
-        if( this.state.loading){
-            orderSummary = <Spinner />  
         }
         return (
             <Aux>
@@ -97,17 +92,21 @@ class BurgerBuilder extends Component {
         );
     }
 }
-
+// Utilizing Redux in the project
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients,
-        price: state.totalPrice
+        ings: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        error: state.burgerBuilder.error
     };
 }
+// Creating dispatches for Redux to be used in the code see line: 73
 const mapDispatchToProps = dispatch =>{
     return {
-        onIngredientAdded: (ingName) => dispatch({type: actionTypes.ADD_INGREDIENT, ingredientName:ingName }),
-        onIngredientRemove: (ingName) => dispatch({type: actionTypes.REMOVE_INGREDIENT, ingredientName:ingName })
+        onIngredientAdded: (ingName) => dispatch(actions.addIngredient(ingName)),
+        onIngredientRemove: (ingName) => dispatch(actions.removeIngredient(ingName)),
+        onInitIngredients: () => dispatch(actions.initIngredients()),
+        onInitPurchase: () => dispatch(actions.purchaseInit())
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));
