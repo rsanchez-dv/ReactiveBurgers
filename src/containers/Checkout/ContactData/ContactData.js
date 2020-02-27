@@ -184,9 +184,10 @@ class ContactData extends Component{
 
 const mapStateToProps = state =>{
     return {
-        ings: state.ingredients,
-        price: state.totalPrice,
-        loading: state.loading
+        ings: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        // This is only in order reducer 
+        loading: state.order.loading
     }
 }
 // These get called on the code in react which invokes a dispatch in store

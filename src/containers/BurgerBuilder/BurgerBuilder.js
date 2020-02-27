@@ -3,7 +3,7 @@ import Aux from '../../hoc/Aux/Aux';
 // You need to connect this component with Redux
 import {connect} from 'react-redux';
 // What actions you can do with Redux
-import * as burgerBuilderActions from '../../store/actions/';
+import * as actions from '../../store/actions/';
 // Brings in our Axios instance
 import Modal from '../../components/UI/Modal/Modal';
 import Burger from '../../components/Burger/Burger';
@@ -45,6 +45,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () =>{
+        this.props.onInitPurchase();
         this.props.history.push('/checkout');
     }
     render(){
@@ -94,17 +95,18 @@ class BurgerBuilder extends Component {
 // Utilizing Redux in the project
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients,
-        price: state.totalPrice,
-        error: state.error
+        ings: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        error: state.burgerBuilder.error
     };
 }
 // Creating dispatches for Redux to be used in the code see line: 73
 const mapDispatchToProps = dispatch =>{
     return {
-        onIngredientAdded: (ingName) => dispatch(burgerBuilderActions.addIngredient(ingName)),
-        onIngredientRemove: (ingName) => dispatch(burgerBuilderActions.removeIngredient(ingName)),
-        onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients())
+        onIngredientAdded: (ingName) => dispatch(actions.addIngredient(ingName)),
+        onIngredientRemove: (ingName) => dispatch(actions.removeIngredient(ingName)),
+        onInitIngredients: () => dispatch(actions.initIngredients()),
+        onInitPurchase: () => dispatch(actions.purchaseInit())
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));
