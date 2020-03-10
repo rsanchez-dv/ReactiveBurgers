@@ -106,7 +106,7 @@ class ContactData extends Component{
             orderData: formData
         }
         // Calls props from redux which sends the order to the dispatch
-        this.props.onOrderBurger(order);
+        this.props.onOrderBurger(order,this.props.token);
     }
     checkValidity(value,rules) {
         let isValid = true;
@@ -187,13 +187,14 @@ const mapStateToProps = state =>{
         ings: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.totalPrice,
         // This is only in order reducer 
-        loading: state.order.loading
+        loading: state.order.loading,
+        token: state.auth.token
     }
 }
 // These get called on the code in react which invokes a dispatch in store
 const mapDispatchToProps = dispatch => {
     return {
-        onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData))
+        onOrderBurger: (orderData,token) => dispatch(actions.purchaseBurger(orderData,token))
     };
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData,axios));
