@@ -5,6 +5,7 @@ import classes from './Auth.css'
 import * as actions from '../../store/actions/index'
 import {connect} from 'react-redux';
 import Spinner from '../../components/UI/Spinner/Spinner'
+import {Redirect} from 'react-router-dom';
 class Auth extends Component {
     state = {
         controls: {
@@ -108,18 +109,23 @@ class Auth extends Component {
             <p>{this.props.error.message}</p>
             )
         }
+        let authRedirect = null;
+        if(this.props.isAuthenticated){
+            authRedirect = <Redirect to="/"/>
+        }
         return (
             <div className={classes.Auth}>
+                {authRedirect}
                 {errorMessage}
                 <form onSubmit={this.submitHandler}>
-                    <h2>Register</h2>
+                    {this.state.isSignUp ? <h2>Register</h2>: <h2>Login</h2>}
                     {form}
-        <Button btnType="Success">{!this.state.isSignUp ? 'Sign In' : 'Sign Up'}</Button>
-                    
+                    <Button btnType="Success">Submit</Button>
                 </form>
-        <Button
-            clicked={this.switchAuthModeHandler}
-            btnType="Danger">Switch to {this.state.isSignUp ? 'Sign In' : 'Sign Up'}</Button>
+                <Button
+                    clicked={this.switchAuthModeHandler}
+                    btnType="Danger">Switch to {this.state.isSignUp ? 'Login' : 'Register'}
+                </Button>
             </div>
         );
     }
@@ -127,7 +133,8 @@ class Auth extends Component {
 const mapStateToProps = state =>{
     return {
          loading: state.auth.loading,
-         error: state.auth.error
+         error: state.auth.error,
+         isAuthenticated: state.auth.token !== null
     }
 }
 const mapDispatchToProps = dispatch => {
