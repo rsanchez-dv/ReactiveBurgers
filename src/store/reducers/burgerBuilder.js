@@ -5,7 +5,8 @@ import {updateObject} from '../utility';
 const initialState = {
     ingredients: null,
     totalPrice: 4,
-    error: false
+    error: false,
+    building: false
 };
 // Store Ingredients for the app and to calculate the total cost
 const INGREDIENT_PRICES = {
@@ -20,7 +21,8 @@ const addIngredient = (state,action) => {
 
     const updatedState = {
         ingredients: updatedIngredients,
-        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName]
+        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+        building: true
     }
     return updateObject(state, updatedState);
 }
@@ -30,7 +32,8 @@ const removeIngredient = (state,action) => {
 
     const updatedState = {
         ingredients: updatedIngredients,
-        totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName]
+        totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
+        building: true
     }
     return updateObject(state, updatedState);
 }
@@ -44,7 +47,8 @@ const setIngredients = (state, action) => {
         },
         // You could pull this from server but for now its hard coded
         totalPrice: 4,
-        error: false
+        error: false,
+        building: false
     });
 }
 const reducer = (state = initialState,action) =>{
