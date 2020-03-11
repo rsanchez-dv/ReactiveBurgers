@@ -103,7 +103,8 @@ class ContactData extends Component{
         const order = {
             ingredients: this.props.ings,
             price: this.props.price,
-            orderData: formData
+            orderData: formData,
+            userId: this.props.userId
         }
         // Calls props from redux which sends the order to the dispatch
         this.props.onOrderBurger(order,this.props.token);
@@ -188,7 +189,8 @@ const mapStateToProps = state =>{
         price: state.burgerBuilder.totalPrice,
         // This is only in order reducer 
         loading: state.order.loading,
-        token: state.auth.token
+        token: state.auth.token,
+        userId: state.auth.userId
     }
 }
 // These get called on the code in react which invokes a dispatch in store
