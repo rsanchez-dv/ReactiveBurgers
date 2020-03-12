@@ -4,11 +4,36 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {BrowserRouter} from 'react-router-dom';
+// Setting up Redux
+//------------------------------------
+import {Provider} from 'react-redux';
+import {createStore, applyMiddleware, compose, combineReducers} from 'redux';
+import thunk from 'redux-thunk';
+import burgerBuilderReducer from './store/reducers/burgerBuilder';
+import orderReducer from './store/reducers/order';
+import authReducer from './store/reducers/auth';
 
+// Uses this version for asynchronous requests
+const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null|| compose;
+// Combined both reducers into one file
+const rootReducer = combineReducers({
+    burgerBuilder: burgerBuilderReducer,
+    order: orderReducer,
+    auth: authReducer
+})
+const store = createStore(rootReducer, composeEnhancers(
+    applyMiddleware(thunk)
+));
+
+//-------------------------------------
 const app = (
-    <BrowserRouter>
-        <App/>
-    </BrowserRouter>
+    // Wrap Store with the Apps
+    <Provider store={store}>
+        <BrowserRouter>
+            <App/>
+        </BrowserRouter>
+    </Provider>
+    
 )
 ReactDOM.render(app, document.getElementById('root'));
 

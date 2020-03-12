@@ -1,9 +1,13 @@
 import React, {Component} from 'react';
 import Button from '../../../components/UI/Button/Button';
 import Classes from './ContactData.css';
-import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
+import {connect} from 'react-redux';
+import axios from '../../../axios-orders';
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
+import * as actions from '../../../store/actions/index';
+import {updateObject, checkValidity} from '../../../shared/utility';
 
 class ContactData extends Component{
     state = {
@@ -90,62 +94,35 @@ class ContactData extends Component{
             }
        },
         formIsValid: false,
-        loading:false
     }
     orderHandler = (event) => {
         event.preventDefault();
-        this.setState({loading: true});
+        
         const formData = {};
         for (let formElementIdentifier in this.state.orderForm) {
             formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
         }
         const order = {
-            ingredients: this.props.ingredients,
+            ingredients: this.props.ings,
             price: this.props.price,
-            orderData: formData
+            orderData: formData,
+            userId: this.props.userId
         }
-        axios.post(`/orders.json`,order)
-        .then(response=> {
-            this.setState({loading: false,purchasing: false});
-            this.props.history.push('/');
-        })
-        .catch(error => {
-            this.setState({loading: false,purchasing: false});
-            console.error('An error has occured');
-        }); 
+        // Calls props from redux which sends the order to the dispatch
+        this.props.onOrderBurger(order,this.props.token);
     }
-    checkValidity(value,rules) {
-        let isValid = true;
-        if(!rules){
-            return true;
-        }
-        if(rules.required){
-            isValid = value.trim() !== '' && isValid;
-        }
-        if(rules.minLength){
-            isValid = value.length >= rules.minLength && isValid;
-        }
-        if(rules.maxLength){
-            isValid = value.length <= rules.maxLength && isValid;
-        }
-        return isValid;
-    }
+    
     inputChangedHandler = (event, inputIdentifier) => {
-        // Copy from state
-        const updatedOrderForm = {
-            ...this.state.orderForm
-        };
-        // Since its not a deep copy, copy the rest of the data in orderForm
-        const updatedFormElement = {
-            ...updatedOrderForm[inputIdentifier]
-        };
-        // Read from event
-        updatedFormElement.value = event.target.value;
-        // Run Validations
-        updatedFormElement.valid = this.checkValidity(updatedFormElement.value,updatedFormElement.validation);
-        updatedFormElement.touched = true;
-        // Pass on updated values to updatedOrderForm
-        updatedOrderForm[inputIdentifier] = updatedFormElement;
+        const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier],{
+            value: event.target.value,
+            valid: checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
+            touched: true
+        });
+        
+        const updatedOrderForm = updateObject(this.state.orderForm, {
+            [inputIdentifier]  : updatedFormElement
+        });
+
         let formIsValid = true;
         for (let inputIdentifier in updatedOrderForm){
             formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
@@ -176,7 +153,7 @@ class ContactData extends Component{
             ))}
             <Button btnType="Success" disable={!this.state.formIsValid} clicked={this.orderHandler}>Order</Button>
         </form>);
-        if (this.state.loading){
+        if (this.props.loading){
             form = <Spinner/>
         }
         return (
@@ -187,4 +164,21 @@ class ContactData extends Component{
         );
     }
 }
-export default ContactData;
+
+const mapStateToProps = state =>{
+    return {
+        ings: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        // This is only in order reducer 
+        loading: state.order.loading,
+        token: state.auth.token,
+        userId: state.auth.userId
+    }
+}
+// These get called on the code in react which invokes a dispatch in store
+const mapDispatchToProps = dispatch => {
+    return {
+        onOrderBurger: (orderData,token) => dispatch(actions.purchaseBurger(orderData,token))
+    };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData,axios));
