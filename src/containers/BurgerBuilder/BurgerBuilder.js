@@ -22,7 +22,6 @@ class BurgerBuilder extends Component {
         
     }
     componentDidMount () {
-        console.log(this.props)
         // We need asyncronous Redux for this to work
         this.props.onInitIngredients();
     }
@@ -31,7 +30,6 @@ class BurgerBuilder extends Component {
         if(this.props.isAuthenticated){
             this.setState({purchasing: true});
         } else{
-            console.log('Redirect setup to checkout')
             this.props.onSetAuthRedirectPath('/checkout')
             this.props.history.push('/auth');
         }
